@@ -1,0 +1,59 @@
+@()
+
+@tableHeader(name: String) = {
+   <th>@name <a ng-click="predicate='@name';reverse=!reverse"><span class="glyphicon glyphicon-sort"></span></a></th>
+}
+
+
+	<article ng-app="myApp">
+	<section ng-controller="cityCtrl">
+	<table class="table table-striped">
+		<thead>
+			<tr>
+				@{Seq("id","name","country_id").map{a=> 
+					tableHeader(a)
+				}}
+
+				<th ng-repeat="item in ranking">{{item.name}} {{item.year}}</th>
+			</tr>
+		</thead>
+
+			<tr ng-repeat="d in values | orderBy:predicate:reverse">
+				<td>{{d.id}}</td>
+				<td>{{d.name}}</td>
+				<td ng-repeat="item in countries | filter:{id: d.country_id}:true">{{item.name}}</td>
+			</tr>
+		</table>
+	</article>
+
+<script src="@routes.Assets.at("js/angular.min.js")"></script>
+<script>
+var app = angular.module('myApp', [])
+
+function cityCtrl($scope, $http, $filter){
+
+	$scope.values = []
+	$scope.countries = []
+	$scope.predicate = '-name';
+
+	function loadCountries() {
+		$http({
+			method: 'POST',
+			url: '@routes.Countries.list'
+		})
+		.success(function(data, status) {
+			$scope.countries = data;
+		});
+	}
+
+	function load() {
+		$http({
+			method: 'POST',
+			url: '@routes.Cities.list'
+		})
+		.success(function(data, status) {
+			$scope.values = data;
+		});
+	};
+}
+</script>

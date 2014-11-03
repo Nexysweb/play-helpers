@@ -1,0 +1,8 @@
+@(name: String, args: Seq[(Symbol, Any)])(content: Html)(implicit lang: play.api.i18n.Lang)
+<div class="form-group" ng-class="{'has-error': error.@name.replace(".","_")}">
+	<label class="col-sm-2 control-label">@Messages(args.toMap.get('label).map(_.toString).getOrElse(name))</label>
+	<div class="col-sm-10">
+	@content
+	<span class="help-block" ng-class="{'has-error': error.@name.replace(".","_")}">{{error.@name.replace(".","_")}}</span>
+	</div>
+</div>

@@ -1,0 +1,20 @@
+@(name: String, list_name: String, args: (Symbol,Any)*)(implicit lang: play.api.i18n.Lang)
+
+@wrapper(name, args){
+	<p 
+		class="form-control-static"
+		ng-show="!show.@name && value.@name"
+		ng-repeat="item in @list_name | filter:{id: value.@name}:strict"
+	>
+		{{item.name}}
+	</p>
+	<select 
+		ng-model="value.@name"
+		ng-show="show.@name"
+		class="form-control"
+		ng-options="item.id as item.name for item in @list_name" 
+		@{if(args.toMap.get('disabled).isDefined){"disabled"}}
+		@{if(args.toMap.get('multiple).isDefined){"multiple"}}
+	>
+	</select>
+}

@@ -1,0 +1,11 @@
+@(name: String, args: Seq[(Symbol, Any)])(content: Html)(implicit lang: play.api.i18n.Lang)
+<div class="form-group" ng-class="{'has-error': error.@name.replace(".","_")}" ng-click="show.@name.replace(".","_")=true" >
+	<label class="col-sm-3 control-label" ng-init="edit.@name=false" ng-mouseenter="edit.@name = true" ng-mouseleave="edit.@name = false">
+		@Messages(args.toMap.get('label).map(_.toString).getOrElse(name))
+		<a href="" ng-click="show.@name=true"><small><span ng-show="edit.@name" class="glyphicon glyphicon-pencil"></span></small></a>
+	</label>
+	<div class="col-sm-9">
+	@content
+	<span class="help-block" ng-class="{'has-error': error.@name.replace(".","_")}">{{error.@name.replace(".","_")}}</span>
+	</div>
+</div>

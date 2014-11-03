@@ -1,0 +1,23 @@
+@(name: String, list_name: String, args: (Symbol,Any)*)(implicit lang: play.api.i18n.Lang)
+
+@wrapper(name, args){
+@args.toMap.get('type).map(_.toString).getOrElse("text") match{
+	case "radio" => {
+		<label ng-repeat="item in @list_name" class="radio-inline">
+			<input type="@if(args.toMap.get('multiple).isDefined){checkbox}else{radio}" ng-model="value.@name" ng-value="item.id"> {{item.name}}
+		</label>
+	}
+
+
+	case _ => {
+			<select 
+			ng-model="value.@name"
+			class="form-control"
+			ng-options="item.id as item.name for item in @list_name" 
+			@{if(args.toMap.get('disabled).isDefined){"disabled"}}
+			@if(args.toMap.get('multiple).isDefined){multiple}
+		>
+		</select>
+	}
+}
+}
