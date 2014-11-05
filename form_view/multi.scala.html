@@ -1,0 +1,23 @@
+@(name: String, list_name: String, args: (Symbol,Any)*)(implicit lang: play.api.i18n.Lang)
+
+@wrapper(name, args){
+	<ul class="form-control-static list-inline col-sm-11"
+		ng-show="!show.@name"
+	>
+    <li ng-repeat="item in @list_name | filter:{assigned: true}:true">{{item.name}}</li>
+    </ul>
+    <span 
+    	ng-repeat="item in @list_name"
+    >
+    <a
+    	class="label"
+    	ng-class="{'label-success': item.assigned==true, 'label-default': item.assigned==false}"
+    	ng-model="item.assigned"
+    	ng-click="toggleOption('@list_name', $index)"
+    	ng-show="show.@name"
+    >
+    {{item.name}}
+    </a>
+    </span>
+    <br><a ng-show="show.@name" ng-click="update()"><small><span class="glyphicon glyphicon-ok"></span></small></a>
+}
