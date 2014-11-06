@@ -93,6 +93,18 @@ POST\t/$route_path/edit\tcontrollers.$controller_object.edit";
 
 					
 my $model="
+package models
+
+import play.api._
+import play.api.mvc._
+import play.api.db._
+import play.api.Play.current
+
+import anorm._
+import anorm.SqlParser._
+
+import java.util.Date
+
 case class $model_case($model_case_fields)
 
 
@@ -154,6 +166,21 @@ object $model_object extends tCRUD[$model_case]{
 
 
 my $controller = "
+package controllers
+
+import play.api._
+import play.api.mvc._
+
+import play.api.data._
+import play.api.data.Forms._
+import play.api.data.format.Formats._ 
+
+import play.api.libs.json._
+import play.api.libs.json.Json
+
+
+import models._
+
 object $controller_object extends Controller {
 
   implicit val userFormat1 = Json.format[$model_case]
@@ -414,8 +441,6 @@ function crud(\$scope, \$http,\$filter) {
     
 }
 
-
-
 </script>
 
 }
@@ -435,15 +460,11 @@ open(WFILE, '>'.$folder_name."/".'index.scala.html');
 open(WFILE, '>'.$folder_name."/".'update.scala.html');
  print WFILE $html_update;
 
-# open(WFILE, '>'.$folder_name."/".$html_name_edit.'.scala.html');
-# print WFILE $html_edit;
+open(WFILE, '>'.$model_object.'.scala');
+ print WFILE $model;
 
-# open(WFILE, '>'.$folder_name."/".$html_name_list.'.scala.html');
-# print WFILE $html_list;
+open(WFILE, '>'.$controller_object.'.scala');
+ print WFILE $controller;
 
-# open(WFILE, '>'.$folder_name."/".$html_name_detail.'.scala.html');
-# print WFILE $html_detail;
-
-open(WFILE, '>out.txt');
-print WFILE "##### routes #####\n\n".$routes."\n\n##### controller #####\n\n".$controller."\n\n##### model #####\n\n".$model;
+print "##### routes #####\n\n".$routes."\n\n";
 
