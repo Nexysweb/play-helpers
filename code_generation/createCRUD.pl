@@ -1,7 +1,10 @@
 use strict;
 
 
-# todo: order by name
+# todo / missing
+
+# - formy
+# - SQL table generation
 
 # set variable/class/file names
 my $controller_object		= "ExampleCtrl";
@@ -10,22 +13,11 @@ my $folder_name 			= "example";
 
 my $table_name				= "example";
 
-
-#my $model_case_list		= "Tasks";
-my $model_case				= "Example";
+my $model_case				= $model_object;
 
 my $route_path				= "example";
 
 my $prefix_translator		= "example";
-
-
-### html template filenames
-#my $html_name_add 		= "add";
-#my $html_name_edit 		= "edit";
-#my $html_name_list 		= "list";
-#my $html_name_detail		= "detail";
-
-
 
 
 #prepare variables
@@ -58,7 +50,7 @@ for(my $i=0;$i<@fields_type;++$i){
 	$model_case_get		= $model_case_get."\tget[".$fields_type[$i]."](\"".$fields_name[$i]."\")~\n";
 	$model_case_get2	= $model_case_get2.$fields_name[$i]."~";
 	$model_case_get3	= $model_case_get3.$fields_name[$i].", ";
-	$model_case_get4	= "\"".$model_case_get3.$fields_name[$i]."\", ";
+	$model_case_get4	= "\"".$model_case_get4.$fields_name[$i]."\", ";
 	$mysql_fields		= $mysql_fields."\n\t\t\t'".$fields_name[$i]."\t-> v.".$fields_name[$i].",";
 
 	if($fields_name[$i] ne "id"){
