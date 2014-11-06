@@ -35,6 +35,7 @@ my $model_case_fields=""; 	# generates case class(id: Long, ...)
 my $model_case_get=""; 		# generates get[Long])("id")~
 my $model_case_get2=""; 	# generates id~name~...
 my $model_case_get3=""; 	# generates id, name, 
+my $model_case_get4=""; 	# generates "id", "name", 
 my $mysql_set="";			# defines SET name={name}
 my $mysql_fields="";		# defines 'name -> v.name
 my $form_content ="";
@@ -57,6 +58,7 @@ for(my $i=0;$i<@fields_type;++$i){
 	$model_case_get		= $model_case_get."\tget[".$fields_type[$i]."](\"".$fields_name[$i]."\")~\n";
 	$model_case_get2	= $model_case_get2.$fields_name[$i]."~";
 	$model_case_get3	= $model_case_get3.$fields_name[$i].", ";
+	$model_case_get4	= "\"".$model_case_get3.$fields_name[$i]."\", ";
 	$mysql_fields		= $mysql_fields."\n\t\t\t'".$fields_name[$i]."\t-> v.".$fields_name[$i].",";
 
 	if($fields_name[$i] ne "id"){
@@ -71,10 +73,11 @@ for(my $i=0;$i<@fields_type;++$i){
 
 
 $myForm						= substr($myForm,0,-2);
-$model_case_fields	= substr($model_case_fields,0,-2);
-$model_case_get		= substr($model_case_get,0,-2)." map {\n\t\t\t\tcase ".substr($model_case_get2,0,-1)." => ".$model_case."(".substr($model_case_get3,0,-2).")\n\t\t\t}";
+$model_case_fields			= substr($model_case_fields,0,-2);
+$model_case_get				= substr($model_case_get,0,-2)." map {\n\t\t\t\tcase ".substr($model_case_get2,0,-1)." => ".$model_case."(".substr($model_case_get3,0,-2).")\n\t\t\t}";
 $mysql_fields				= substr($mysql_fields,0,-1);
 $mysql_set					= substr($mysql_set,0,-1);
+$model_case_get4 			= substr($model_case_get4, 0, -2);
 
 ###
 				
@@ -150,152 +153,287 @@ object $model_object extends tCRUD[$model_case]{
 }";
 
 
-# my $controller ="object $controller_object extends Controller{
-# 	def list = Action{
-# 		Ok(views.html.$folder_name.".$html_name_list."($model_object.list))
-# 	}
-# 	
-# 	def detail(id: Long) = Action{
-# 		Ok(views.html.$folder_name.".$html_name_detail."($model_object.detail(id)))
-# 	}
-# 	
-# 	def add = Action{
-# 		Ok(views.html.".$folder_name.".".$html_name_add."(myForm))
-# 	}
-# 	
-# 	def insert = Action { implicit request =>
-# 		myForm.bindFromRequest.fold(
-# 			errors => BadRequest(views.html.$folder_name.".$html_name_add."(errors)),
-# 			values => {
-# 				$model_object.insert(values)
-# 				Redirect(routes.$controller_object.list)
-# 			}
-# 		)
-# 	}
-# 	
-# 	def edit(id: Long) = Action{
-# 		Ok(views.html.$folder_name.".$html_name_edit."(id, myForm.fill($model_object.detail(id))))
-# 	}
-# 	
-# 	def update(id: Long) = Action { implicit request =>
-# 		myForm.bindFromRequest.fold(
-# 			errors => BadRequest(views.html.$folder_name.".$html_name_edit."(id, errors)),
-# 			values => {
-# 				$model_object.update(id, values)
-# 				Redirect(routes.$controller_object.list)
-# 			}
-# 		)
-# 	}
-# 	
-# 	def delete(id: Long) = Action{
-# 		$model_object.delete(id)
-# 		Redirect(routes.$controller_object.list)
-# 	}
-# 	
-# 	val myForm = Form(
-# 		mapping(
-# $myForm
-# 		)
-# 		($model_case_detail.apply)($model_case_detail.unapply)
-# 	)
-# }";
-# 
-# 
+my $controller = "
+object $controller_object extends Controller {
+
+  implicit val userFormat1 = Json.format[$model_case]
+
+  def index = Action{
+    Ok(views.html.$folder_name.index())
+  }
+
+  def edit = Action{implicit request =>
+    simpleOForm.bindFromRequest.fold(
+      e => BadRequest(\"error\"), 
+      v => Ok(views.html.$folder_name.update(v))
+    )
+  }
+
+  def list = Action{
+    Ok(Json.toJson($model_object.list))
+  }
+
+  def update = Action{implicit request =>
+    myForm.bindFromRequest.fold(
+      e => {
+        import play.api.i18n._
+        val b = JsObject(e.errors.map{a =>
+          a.key.replace(\".\",\"_\") -> JsString(Messages(a.message))
+        })
+        BadRequest(Json.toJson(b))
+      }
+      , v => {
+        val id = $model_object.update(v)
+        if(id.isDefined){
+          Ok(Json.toJson($model_object.detail(id.get).get))
+        }
+        else{
+          BadRequest(\"error\")
+        }
+      }
+    )
+  }
+
+  def detail = Action{implicit request =>
+    simpleForm.bindFromRequest.fold(
+      e => Ok(JsNull),
+      v => {
+        Ok(Json.toJson($model_object.detail(v)))
+      }
+    )
+  }
+
+
+  val myForm = Form(
+    mapping(
+      $myForm
+    )($model_object.apply)($model_object.unapply)
+  )
+
+  val simpleForm = Form(
+    single(
+      \"id\" -> longNumber
+    )
+  )
+
+  val simpleOForm = Form(
+    single(
+      \"id\" -> optional(longNumber)
+    )
+  )
+
+  
+
+  def delete = Action{implicit request =>
+    simpleForm.bindFromRequest.fold(
+      e => BadRequest(\"error\"),
+      v => {
+        $model_object.delete(v)
+        Ok(\"deleted\")
+      }
+    )
+  }
+}
+";
+
+
+
 # 
 # #### HTML
 # 
-# 
-# my $html_add = "\@(myForm: Form[$model_case_detail])
-# 
-# \@import helper._
-# 
-# \@import play.api.i18n._
-# 
-# \@main(Messages(\"".$prefix_translator."_title_add\")) {
-# 	\@form(routes.".$controller_object.".insert) {\n".
-# 	$form_content."	
-# 		<input type=\"submit\" value=\"\@Messages(\"add\")\">		
-# 
-# 	}
-# }";
-# 
-# my $html_edit = "\@(id: Long, myForm: Form[$model_case_detail])
-# 
-# \@import helper._
-# 
-# \@import play.api.i18n._
-# 
-# \@main(Messages(\"".$prefix_translator."_title_edit\")) {
-# 	\@form(routes.".$controller_object.".update(id)) {\n".
-# 	$form_content."	
-# 		<input type=\"submit\" value=\"\@Messages(\"edit\")\">		
-# 
-# 	}
-# }";
-# 
-# 
-# my $html_list = "\@(values: List[$model_case_list])
-# 
-# \@import helper._
-# 
-# \@main(Messages(\"".$prefix_translator."_list_title\")) {
-#    
-# 	<p><a href=\"\@routes.".$controller_object.".add\">\@Messages(\"add\")</a></p>
-# 
-# \@if(values.size>0){
-# 	
-# 
-# 	<h2>\@values.size</h2>
-#     <table>
-#         \@values.map { value =>
-#             <tr>".
-# $list_content."
-# 				<td><a href=\"\@routes.$controller_object.detail(value.id.get)\">\@Messages(\"view\")</a></td>
-# 				<td><a href=\"\@routes.$controller_object.edit(value.id.get)\">\@Messages(\"edit\")</a></td>
-# 				<td><a href=\"\@routes.$controller_object.delete(value.id.get)\">\@Messages(\"delete\")</a></td>	
-#             </tr>
-#         }
-#     </table>
-# }else{
-# 	<p><i>\@Messages(\"no_num_row\")</i></p>
-# }
-# 
-# 
-# <ul>
-# </ul>
-# }";
-# 
-# 
-# 
-# my $html_detail ="\@(values: $model_case_detail)
-# 
-# \@import helper._
-# 
-# \@main(Messages(\"".$prefix_translator."_detail_title\")) {
-# 	
-# 
-# 
-#     <table>".
-# $detail_content."
-#     </table>
-# 
-# 	<ul>
-# 		<li><a href=\"\@routes.".$controller_object.".list\">\@Messages(\"back\")</a></li>
-# 		<li><a href=\"\@routes.".$controller_object.".edit(values.id.get)\">\@Messages(\"edit\")</a></li>
-#     </ul>
-# 
-# }";
+#
 
-#print $html_add;
+
+my $html_index = "
+\@()
+
+\@tableHeader(name: String) = {
+   <th>\@name <a ng-click=\"predicate='\@name';reverse=!reverse\"><span class=\"glyphicon glyphicon-sort\"></span></a></th>
+}
+
+\@tableElement(name: String) = {
+  <td>{{item.\@name}}</td>
+}
+
+\@main(\"\"){
+<article ng-app=\"myApp\">
+<h2>List</h2>
+
+<section ng-controller=\"crud\" ng-init=\"list()\">
+
+<a class=\"btn btn-primary\" href=\"\@routes.$controller_object.edit\"><span class=\"glyphicon glyphicon-plus\"></span></a>
+
+<table class=\"table table-striped table-hover\">
+
+<thead>
+<tr>
+\@Seq($model_case_get4).map{name =>
+\@tableHeader(name)
+}
+<th></th>
+</tr>
+</thead>
+
+<tbody>
+  <tr ng-repeat=\"item in values | orderBy:predicate:reverse\">
+  \@Seq($model_case_get4).map{name =>
+    \@tableElement(name)
+  }
+  <td>
+    <form id=\"{{item.id}}\" action=\"\@routes.$controller_object.edit\" method=\"GET\">
+      <input type=\"hidden\" name=\"id\" value=\"{{item.id}}\">
+      <button class=\"btn btn-primary\"><span class=\"glyphicon glyphicon-edit\"></span></button>
+    </form>
+    <a ng-click=\"delete(item.id)\" class=\"btn btn-danger\"><span class=\"glyphicon glyphicon-remove\"></span></a>
+  </td>
+  </tr>
+</tbody>
+
+</table>
+
+
+</section>
+
+</article>
+\@widget.js_tag(\"bower_components/angular/angular.min.js\")
+<script type=\"text/javascript\">
+
+
+var app = angular.module('myApp', []);
+function crud(\$scope, \$http, \$filter) {
+    \$scope.values = []
+    \$scope.predicate = '-first_name';
+
+    \$scope.list = function(){
+        \$http({
+            method: \"POST\", 
+            url: '\@routes.$controller_object.list',
+            data: \$scope.value
+        })
+        .success(function (jdata) {
+            console.log(\"success\")
+            \$scope.values = jdata
+                 
+        })
+        .error(function(jdata){
+        })
+    }
+
+    \$scope.delete = function(id){
+
+      \$http({
+            method: \"POST\", 
+            url: '\@routes.$controller_object.delete',
+            data: {id: 0}
+        })
+        .success(function (jdata) {
+          var c = angular.copy(\$scope.values)
+
+          angular.forEach(c, function(v, k){
+            if(v.id == id){
+              \$scope.values.splice(k, 1)
+            }
+          })
+          
+        })
+        .error(function(jdata){        })
+
+    }
+}
+
+</script>
+
+}
+";
+
+
+# todo do collection formy input
+my $html_update = "
+\@(id: Option[Long] = None)
+
+
+\@main(\"\"){
+<article ng-app=\"myApp\">
+<h2>Update </h2>
+
+<section ng-controller=\"crud\" ng-init=\"\@if(id.isDefined){detail()}\">
+<form ng-submit=\"update()\">
+  \@formy.input(\"fname\")
+
+  <input class=\"btn btn-primary\" type=\"submit\">
+    <a class=\"btn btn-default\" href=\"\@routes.Users.index\">Back</a>
+  </form>
+
+</section>
+
+
+</article>
+\@widget.js_tag(\"bower_components/angular/angular.min.js\")
+<script type=\"text/javascript\">
+
+
+var app = angular.module('myApp', []);
+function crud(\$scope, \$http,\$filter) {
+    \$scope.value = {}
+    \$scope.error = {}
+
+    \$scope.connections = []
+
+    \$scope.detail = function(){
+        \$http({
+            method: \"POST\", 
+            url: '\@routes.$controller_object.detail',
+            data: {id: \@id.getOrElse(\"null\")}
+        })
+        .success(function (jdata) {
+            \$scope.value = jdata
+                 
+        })
+        .error(function(jdata){
+        })
+    }
+
+    \$scope.update = function(){
+        \$http({
+            method: \"POST\", 
+            url: '\@routes.$controller_object.update',
+            data: \$scope.value
+        })
+        .success(function (jdata) {
+            console.log(\"success\")
+            \$scope.value = jdata
+            \$scope.error = null
+            \$scope.show = true          
+        })
+        .error(function(jdata){
+            console.log('error')
+            \$scope.error = jdata
+        })
+    }
+
+    
+}
+
+
+
+</script>
+
+}
+";
+
+
 
 
 ## write into files
 
 # create dir
-# mkdir($folder_name);
+ mkdir($folder_name);
 
-#open(WFILE, '>'.$folder_name."/".$html_name_add.'.scala.html');
-# print WFILE $html_add;
+open(WFILE, '>'.$folder_name."/".'index.scala.html');
+ print WFILE $html_index;
+
+open(WFILE, '>'.$folder_name."/".'update.scala.html');
+ print WFILE $html_update;
 
 # open(WFILE, '>'.$folder_name."/".$html_name_edit.'.scala.html');
 # print WFILE $html_edit;
@@ -307,6 +445,5 @@ object $model_object extends tCRUD[$model_case]{
 # print WFILE $html_detail;
 
 open(WFILE, '>out.txt');
-my $controller="bullshit";
 print WFILE "##### routes #####\n\n".$routes."\n\n##### controller #####\n\n".$controller."\n\n##### model #####\n\n".$model;
 
