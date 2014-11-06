@@ -1,0 +1,17 @@
+@*
+  displays a list of options. The user can click on option and it will be assigned to him/her
+*@
+@(list_name: String)
+
+<span 
+  ng-repeat="item in @list_name"
+>
+  <a
+    class="label"
+    ng-class="{'label-success': item.assigned==true, 'label-default': item.assigned==false}"
+    ng-model="item.assigned"
+    ng-click="toggleOption('@list_name', $index)"
+  >
+  {{item.name}}
+  </a>
+</span>

@@ -1,0 +1,83 @@
+##### routes #####
+
+# ExampleCtrl
+POST	/example/list	controllers.ExampleCtrl.list
+POST	/example/detail	controllers.ExampleCtrl.detail
+POST	/example/update	controllers.ExampleCtrl.update
+POST	/example/delete	controllers.ExampleCtrl.delete
+
+POST	/example	controllers.ExampleCtrl.index
+POST	/example/edit	controllers.ExampleCtrl.edit
+
+##### controller #####
+
+bullshit
+
+##### model #####
+
+
+case class Example(id: Option[Long], name: String, age: Long)
+
+
+object Example extends tCRUD[Example]{
+
+
+	val table = "example"
+	val query = "SELECT * FROM "+table
+
+	def list = {
+		DB.withConnection { implicit c =>
+			SQL(query)
+			.as(parser *)
+		}
+	}
+
+	def detail(id: Long) = {
+		DB.withConnection {implicit c =>
+			SQL(query+" WHERE id={id}")
+			.on('id -> id)
+			.as(parser singleOpt)
+		}
+	}
+
+	def update(v: Example) = {
+
+		val q:String = 
+			{if(v.id.isDefined){"UPDATE "}else{"INSERT INTO "}}+
+			table+
+			" SET name={name},age={age}"+
+			{if(v.id.isDefined){" WHERE id={id}"}}
+
+		DB.withConnection { implicit c =>
+			SQL(q)
+			.on(
+				
+			'id	-> v.id,
+			'name	-> v.name,
+			'age	-> v.age
+			) 
+			.executeUpdate()
+		}
+
+		if(v.id.isDefined){
+			v.id
+		}
+		else{
+			utils.MySQL.getLastId(table)
+		}
+	}
+
+	def delete(id: Long) = utils.MySQL.delete(id, table)>0
+
+
+
+	val parser = {
+	get[Option[Long]]("id")~
+	get[String]("name")~
+	get[Long]("age") map {
+				case id~name~age => Example(id, name, age)
+			}
+	}
+
+
+}
