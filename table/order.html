@@ -26,11 +26,12 @@
 		</table>
 	</article>
 
-<script src="@routes.Assets.at("js/angular.min.js")"></script>
+<script src="../bower_components/angular/angular.min.js"></script>
 <script>
 var app = angular.module('myApp', [])
 
-function cityCtrl($scope, $http, $filter){
+
+app.controller('cityCtrl', ['$scope', '$http', '$filter', function($scope, $http, $filter) {
 
 	$scope.values = []
 	$scope.countries = []
@@ -39,7 +40,7 @@ function cityCtrl($scope, $http, $filter){
 	function loadCountries() {
 		$http({
 			method: 'POST',
-			url: '@routes.Countries.list'
+			url: 'routes.Countries.list'
 		})
 		.success(function(data, status) {
 			$scope.countries = data;
@@ -49,11 +50,11 @@ function cityCtrl($scope, $http, $filter){
 	function load() {
 		$http({
 			method: 'POST',
-			url: '@routes.Cities.list'
+			url: 'routes.Cities.list'
 		})
 		.success(function(data, status) {
 			$scope.values = data;
 		});
 	};
-}
+}])
 </script>

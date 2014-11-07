@@ -2,16 +2,15 @@
 <html ng-app="myApp">
 
   <head>
-    <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../bower_components/bootstrap/dist/css/bootstrap.min.css">
   </head>
 
   <body>
-    <h1>Hello Plunker!</h1>
+    <h1>Table with pagination</h1>
     
     <div class="container-fluid">
       <div ng-controller="mainCtrl">
 
-      {{bla}}
         
         <table class="table table-striped table-hover table-bordered">
           <thead>
@@ -37,6 +36,8 @@
     
     <div class="container-fluid">
       <div ng-controller="issuesCtrl">
+
+      <input type="text" ng-model="searchT">
         
         <table class="table table-striped table-hover table-bordered">
           <thead>
@@ -46,7 +47,7 @@
             </tr>
           </thead>
           <tbody>
-            <tr ng-repeat="obj in objects | filter : paginate">
+            <tr ng-repeat="obj in objects | filter : paginate | filter: searchT">
               <td>{{obj.id}}</td>
               <td>{{obj.title}}</td>
             </tr>
@@ -60,9 +61,9 @@
     </div>
     
     
-    <script src="bower_components/angular/angular.min.js"></script>
-    <script src="bower_components/angular-resource/angular-resource.js"></script>
-    <script src="bower_components/angular-bootstrap/ui-bootstrap-tpls.js"></script>
+    <script src="../bower_components/angular/angular.min.js"></script>
+    <script src="../bower_components/angular-resource/angular-resource.js"></script>
+    <script src="../bower_components/angular-bootstrap/ui-bootstrap-tpls.js"></script>
     <script>
 
 
@@ -70,11 +71,9 @@
 
 var app = angular.module('myApp', ['ui.bootstrap', 'ngResource']);
 
-function mainCtrl($scope){
-  $scope.bla = "fds"
-}
+console.clear()
 
-app.controller('mainCtrl', ['$scope', function($scope) {
+app.controller('mainCtrl', ['$scope', '$filter', function($scope, $filter) {
   $scope.objects = [
     {id: 1, name: "1st"},  {id: 2, name: "2nd"},  {id: 3, name: "3rd"},
     {id: 4, name: "4th"},  {id: 5, name: "5th"},  {id: 6, name: "6th"},
@@ -82,11 +81,13 @@ app.controller('mainCtrl', ['$scope', function($scope) {
     {id: 10, name: "10th"},{id: 11, name: "11th"},{id: 12, name: "12th"}
   ]
 
+
   $scope.totalItems = $scope.objects.length;
   $scope.currentPage = 1;
   $scope.numPerPage = 5;
   
   $scope.paginate = function(value) {
+    console.log(value)
     var begin, end, index;
     begin = ($scope.currentPage - 1) * $scope.numPerPage;
     end = begin + $scope.numPerPage;

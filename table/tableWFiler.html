@@ -1,0 +1,69 @@
+<html>
+
+<body>
+<head>
+<link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.min.css">
+</head>
+
+<div ng-app="myApp">
+
+<div class="row">
+	<div class="col-md-2">
+		<input type="text" ng-model="searchT" class="form-control" placeholder="Search">
+	</div>
+	<div class="col-md-2">
+		<a href="@routes.Peoples.listCSV" class="btn btn-primary"><span class="glyphicon glyphicon-export"></span></a>
+	</div>
+</div>
+
+<div ng-init="loadPeople()" ng-controller="PeopleCtrl">
+
+<table class="table table-bordered table-striped table-hover">
+    <tr>
+		<th>@Messages("name")</th>
+		<th>@Messages("company")</th>
+		<th>@Messages("location")</th>
+		<th></th>
+    </tr>
+    <tr ng-repeat="person in people | filter:searchT | orderBy:sortingOrder:reverse">
+		<td>{{person.first_name}} {{person.surname}} ({{person.short}})</td>
+		<td>{{person.company}}</td>
+		<td>{{person.location}}</td>
+		<td>
+			<a class="btn btn-primary" href="{{person.detail}}"><span class="glyphicon glyphicon-search"></span></a>
+			<a class="btn btn-default" href="{{person.edit}}"><span class="glyphicon glyphicon-edit"></span></a>
+			<a class="btn btn-danger"  href="{{person.delete}}"><span class="glyphicon glyphicon-remove"></span></a>
+		</td>
+    </tr>
+</table>
+</div>
+</div>
+
+<script src="../bower_components/angular/angular.min.js"></script>
+<script>
+
+var app = angular.module('myApp', []);
+
+function PeopleCtrl($scope, $http) {
+
+    $scope.people = [];
+
+    $scope.loadPeople = function() {
+        var httpRequest = $http({
+            method: 'GET',
+            url: '/service/people/list'
+
+        }).success(function(data, status) {
+            $scope.people = data;
+        });
+
+    };
+
+}
+
+
+
+
+</script>
+</body>
+</html>
