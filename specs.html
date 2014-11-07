@@ -1,6 +1,8 @@
 <html>
 
-<body>
+<body ng-app="myApp">
+
+<div id="wrapper" ng-controller="mainCtrl">
 
 <h1>Sepcifications and best practice</h1>
 
@@ -30,14 +32,48 @@
 
 <h2>Code Best Practice</h2>
 
+<h3>General</h3>
+
+
 <ul>
-<li>Respect a strict MVC architecture</li>
-<li>When writing a class/object/case class, avoid using the name of the class in the methods. E.g. Object Movie should not contain a method getMovie but rather simpy get()</li>
-<li>For CRUD object use an abstract class, e.g. tCRUD</li>
-<li>When working with Anorm, table names are never stored in query, but in external variable. Ideally as a table variable in the associated object. This avoids running in big issues when changing table names etc.</li>
-<li>Use functional style whenever possible; i.e. favor map over for-loops etc.</li>
-<li>Indentation: define a way of doing it</li>
+<li ng-repeat="item in values | filter:{type_id: 1}">{{item.description}}</li>
 </ul>
+
+<h3>Backend</h3>
+
+<ul>
+<li ng-repeat="item in values | filter:{type_id: 2}">{{item.description}}</li>
+</ul>
+
+
+<h3>FrontEnd</h3>
+
+<ul>
+<li ng-repeat="item in values | filter:{type_id: 3}">{{item.description}}</li>
+</ul>
+
+</div>
+
+<script src="bower_components/angular/angular.min.js"></script>
+<script>
+var app = angular.module('myApp', [])
+
+
+app.controller('mainCtrl', ['$scope', '$http', '$filter', function($scope, $http, $filter) {
+
+$scope.values = [
+	{description: "Respect a strict MVC architecture", type_id: 1},
+	{description: "When writing a class/object/case class, avoid using the name of the class in the methods. E.g. Object Movie should not contain a method getMovie but rather simpy get()", type_id: 1},
+	{description: "For CRUD object use an abstract class, e.g. tCRUD", type_id: 1},
+	{description: "When working with Anorm, table names are never stored in query, but in external variable. Ideally as a table variable in the associated object. This avoids running in big issues when changing table names etc.", type_id: 1},
+	{description: "Use functional style whenever possible; i.e. favor map over for-loops etc.", type_id: 1},
+	{description: "Use dynamic reference to link whenever possible; i.e. @routes...", type_id: 1},
+	{description: "Indentation: define a way of doing it", type_id: 1}
+]
+
+
+}])
+</script>
 
 </body>
 
