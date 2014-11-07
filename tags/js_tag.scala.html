@@ -1,0 +1,7 @@
+@*
+	allows fast integration of js files
+	file: path to resource
+	r: if true, will act assuming the file is internal and in the public folder otherwise absolute pah
+*@
+@(file: String, r: Boolean = true)
+<script type="text/javascript" src="@if(r){@routes.Assets.at(file)}else{@file}"></script>

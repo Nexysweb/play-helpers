@@ -1,0 +1,44 @@
+<html>
+
+<body>
+
+<h1>Sepcifications and best practice</h1>
+
+<h2>Code documentation</h2>
+<ul>
+<li>All functions documented unless already documented in underlying trait or abstract class</li>
+
+</ul>
+
+
+<h2>Versioning</h2>
+
+<ul>
+<li>All code is versioned - no exception</li>
+<li>Since everything is versioned no need to pollute files with unnecessary meta information like author, date_created and so on</li>
+<li>Everytime seomthing new has been done and the code compiles - commit</li>
+<li>Don't commit on master if code does not compile</li>
+<li>Never stop working without having pushed. If code does not compile, create a new branch</li>
+</ul>
+
+<h2>Means of communication</h2>
+
+<ul>
+<li>Limit emails whenever possible</li>
+<li>Use Slack - nexys.slack.com</li>
+</ul>
+
+<h2>Code Best Practice</h2>
+
+<ul>
+<li>Respect a strict MVC architecture</li>
+<li>When writing a class/object/case class, avoid using the name of the class in the methods. E.g. Object Movie should not contain a method getMovie but rather simpy get()</li>
+<li>For CRUD object use an abstract class, e.g. tCRUD</li>
+<li>When working with Anorm, table names are never stored in query, but in external variable. Ideally as a table variable in the associated object. This avoids running in big issues when changing table names etc.</li>
+<li>Use functional style whenever possible; i.e. favor map over for-loops etc.</li>
+<li>Indentation: define a way of doing it</li>
+</ul>
+
+</body>
+
+</html>
