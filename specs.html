@@ -57,7 +57,6 @@ footer {
         <div id="navbar" class="collapse navbar-collapse">
           <ul class="nav navbar-nav">
             <li ng-repeat="item in values" ng-class="{active: nav==item.nav}"><a ng-click="setNav(item.nav)">{{item.name}}</a></li>
-          
           </ul>
         </div><!--/.nav-collapse -->
       </div>
@@ -123,6 +122,23 @@ footer {
 
 </div>
 
+
+
+<div id="container" ng-controller="standardVarCtrl" ng-show="nav==3">
+<table class="table table-striped table-hover">
+<tr>
+<th>Name</th><th>Type</th><th>Use</th>
+</tr>
+
+<tr ng-repeat="item in values">
+<td>{{item.name}}</td>
+<td>{{item.type}}</td>
+<td>{{item.use}}</td>
+</tr>
+
+</table>
+</div>
+
 <footer>
         <p class="col-md-3 col-md-offset-9"><small><a href="http://nexys.ch">Nexys</a> &copy; 2014 | Version 0.1</small></p>
 </footer>
@@ -143,6 +159,7 @@ app.controller('mainCtrl', ['$scope', '$http', '$filter', function($scope, $http
 		{name: "Home", nav: 0},
 		{name: "Technical Stack", nav: 1},
 		{name: "Specifications", nav: 2},
+    {name: "Standard Variables", nav: 3},
 	]
 }])
 
@@ -163,7 +180,9 @@ $scope.values = [
 {description: "Since everything is versioned no need to pollute files with unnecessary meta information like author, date_created and so on", type_id: 4},
 {description: "Everytime seomthing new has been done and the code compiles - commit", type_id: 4},
 {description: "Don't commit on master if code does not compile", type_id: 4},
-{description: "Never stop working without having pushed. If code does not compile, create a new branch", type_id: 4}
+{description: "Never stop working without having pushed. If code does not compile, create a new branch", type_id: 4},
+{description: "CSS should always be in the header section. Not in the body", type_id: 3},
+{description: "It is ok to put JS in body but at the end of the body and if possible all code between ", type_id: 3}
 ]
 
 
@@ -177,6 +196,12 @@ app.controller('stackCtrl', ['$scope', '$http', '$filter', function($scope, $htt
 {name: "AngularJS", version: "1.3.x", link: "http://angularjs.org"},
 {name: "Scalatra", version: "??", link: "http://scalatra.org"},
 {name: "Grunt", version: "??", link: "http://gruntjs.com"}
+]
+}])
+
+app.controller('standardVarCtrl', ['$scope', '$http', '$filter', function($scope, $http, $filter) {
+  $scope.values = [
+{name: "OptionSet", type: "case class", use : "to populate selects/whenever displaying a key and value object"}
 ]
 }])
 
