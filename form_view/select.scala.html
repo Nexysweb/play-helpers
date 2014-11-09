@@ -4,7 +4,7 @@
 	<p 
 		class="form-control-static"
 		ng-show="!show.@name && value.@name"
-		ng-repeat="item in @list_name | filter:{id: value.@name}:strict"
+		ng-repeat="item in @list_name | filter:{id: value.@name}:true"
 	>
 		{{item.name}}
 	</p>
