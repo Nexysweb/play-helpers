@@ -50,7 +50,7 @@ for(my $i=0;$i<@fields_type;++$i){
 	$model_case_get		= $model_case_get."\tget[".$fields_type[$i]."](\"".$fields_name[$i]."\")~\n";
 	$model_case_get2	= $model_case_get2.$fields_name[$i]."~";
 	$model_case_get3	= $model_case_get3.$fields_name[$i].", ";
-	$model_case_get4	= "\"".$model_case_get4.$fields_name[$i]."\", ";
+	$model_case_get4	= $model_case_get4."\"".$fields_name[$i]."\", ";
 	$mysql_fields		= $mysql_fields."\n\t\t\t'".$fields_name[$i]."\t-> v.".$fields_name[$i].",";
 
 	if($fields_name[$i] ne "id"){
@@ -106,7 +106,7 @@ object $model_object extends tCRUD[$model_case]{
 	val table = \"$table_name\"
 	val query = \"SELECT * FROM \"+table
 
-	def list = {
+	def list(id: Long = 0) = {
 		DB.withConnection { implicit c =>
 			SQL(query)
 			.as(parser *)
@@ -189,7 +189,7 @@ object $controller_object extends Controller {
   }
 
   def list = Action{
-    Ok(Json.toJson($model_object.list))
+    Ok(Json.toJson($model_object.list()))
   }
 
   def update = Action{implicit request =>
