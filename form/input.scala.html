@@ -30,7 +30,7 @@
 				type="text"
 				@generic(name)
 				bs-datepicker
-				data-date-format="dd.MM.yyyy"
+				data-date-format="@utils.Format.Pattern.Angular.date"
 			>
 		}
 		case "time" => {
@@ -38,7 +38,7 @@
 				type="text"
 				@generic(name)
 				bs-timepicker
-				data-time-format="HH:mm"
+				data-time-format="@utils.Format.Pattern.Angular.time"
 			>
 		}
 		case _ => {

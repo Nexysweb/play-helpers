@@ -1,0 +1,7 @@
+@(v: String, prefix: String = "item") = {
+<div ng-switch on="@prefix.@v">
+	<span ng-switch-when=1 class="label label-success"><span class="glyphicon glyphicon-ok"></span></span>
+	<span ng-switch-when=2 class="label label-warning"><span class="glyphicon glyphicon-time"></span></span>
+	<span ng-switch-default class="label label-danger"><span class="glyphicon glyphicon-remove"></span></span>
+</div>  
+}

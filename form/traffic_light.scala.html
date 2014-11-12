@@ -1,0 +1,14 @@
+@(v: String, prefix: String = "item") = {
+<span>
+  <span class="label" ng-class="{'label-success': @prefix.@v==1, 'label-default': @prefix.@v!=1}" ng-click="changeSelect($index, 1, '@v')"><span class="glyphicon glyphicon-ok"></span></span>
+  <span class="label" ng-class="{'label-warning': @prefix.@v==2, 'label-default': @prefix.@v!=2}" ng-click="changeSelect($index, 2, '@v')"><span class="glyphicon glyphicon-time"></span></span>
+  <span class="label" ng-class="{'label-danger': @prefix.@v==3, 'label-default': @prefix.@v!=3}" ng-click="changeSelect($index, 3, '@v')"><span class="glyphicon glyphicon-remove"></span></span>
+</span>
+}{
+	@* JS code *@
+	<script>
+	$scope.changeSelect = function(idx, v, name){
+		eval('$scope.values['+idx+'].'+name+'='+v)
+	}
+	</script>
+}
