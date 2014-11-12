@@ -79,8 +79,8 @@ POST\t/$route_path/detail\tcontrollers.$controller_object.detail
 POST\t/$route_path/update\tcontrollers.$controller_object.update
 POST\t/$route_path/delete\tcontrollers.$controller_object.delete
 
-POST\t/$route_path\tcontrollers.$controller_object.index
-POST\t/$route_path/edit\tcontrollers.$controller_object.edit";
+GET\t/$route_path\tcontrollers.$controller_object.index
+GET\t/$route_path/edit\tcontrollers.$controller_object.edit";
 
 
 					
@@ -127,7 +127,7 @@ object $model_object extends tCRUD[$model_case]{
 			{if(v.id.isDefined){\"UPDATE \"}else{\"INSERT INTO \"}}+
 			table+
 			\" SET $mysql_set\"+
-			{if(v.id.isDefined){\" WHERE id={id}\"}}
+			{if(v.id.isDefined){\" WHERE id={id}\"}else{\"\"}}
 
 		DB.withConnection { implicit c =>
 			SQL(q)

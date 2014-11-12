@@ -10,20 +10,25 @@
  * @param args Set of extra attributes.
  *@
 @(name: String, args: (Symbol,Any)*)(implicit lang: play.api.i18n.Lang)
+
+@generic(name: String) = {
+	class="form-control"
+	ng-model="value.@name"
+}
+
+
 @wrapper(name, args){
 	@args.toMap.get('type).map(_.toString).getOrElse("text") match{
 		case "textarea" => {
 			<textarea
-				class="form-control"
-				ng-model="value.@name"
+				@generic(name)
 				rows="@args.toMap.get('rows).map(_.toString).getOrElse(3)">
 			</textarea>
 		}
 		case "date" => {
 			<input
 				type="text"
-				class="form-control"
-				ng-model="value.@name"
+				@generic(name)
 				bs-datepicker
 				data-date-format="dd.MM.yyyy"
 			>
@@ -31,8 +36,7 @@
 		case "time" => {
 			<input
 				type="text"
-				class="form-control"
-				ng-model="value.@name"
+				@generic(name)
 				bs-timepicker
 				data-time-format="HH:mm"
 			>
@@ -40,8 +44,7 @@
 		case _ => {
 			<input
 				type="@args.toMap.get('type).map(_.toString).getOrElse("text")"
-				class="form-control"
-				ng-model="value.@name"
+				@generic(name)
 				placeholder="@Messages(
 				args.toMap.get('label).map(_.toString).getOrElse(name)
 				)">
