@@ -1,7 +1,21 @@
 @*
 	allows fast integration of js files
 	file: path to resource
-	r: if true, will act assuming the file is internal and in the public folder otherwise absolute pah
+	r: 
+		1:  assuming the file is internal and in the public folder
+		2: 	absolute pah
+		3: 	bower_components resource (this should be preferred)
+
+	match resource: http://stackoverflow.com/questions/9748258/match-case-in-scala-template-doesnt-work-in-play2
 *@
-@(file: String, r: Boolean = true)
-<script type="text/javascript" src="@if(r){@routes.Assets.at(file)}else{@file}"></script>
+@(filepath: String, src_type: Int = 1)
+<script
+	type="text/javascript"
+	src="@src_type match{
+		case 2 => {@filepath}
+		case 3 => {@routes.Assets.at(utils.Constants.Src.bower+filepath)}
+		case _ => {@routes.Assets.at(filepath)}
+	}"
+	charset="utf-8"
+>
+</script>

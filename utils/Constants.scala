@@ -6,6 +6,12 @@ import play.api.Play.current
 
 case class DB_auth(user: String, password: String, db: String, host: String, url: String)
 
+/*
+	This files contains all sort of Constants that are used throughout the application
+
+	Note that formats are stored in a separate file /utils/Format.scala
+*/
+
 object Constants{
 
 	val online:Boolean 		= {
@@ -16,9 +22,6 @@ object Constants{
 			false
 		}
 	}
-
-	// cron frequency [min]; every x min automated task is ran
-	val path:String			= ""
 
 	val timezone:String 	= "Europe/Zurich"
 
@@ -79,6 +82,11 @@ object Constants{
 		else{
 			None
 		}
+	}
+
+	// list of internal and external links
+	object Src{
+		val bower = "bower_components/"
 	}
 }
 
