@@ -10,6 +10,10 @@
 var geocoder = new google.maps.Geocoder();
 var address = "Nicholson 2 London";
 
+geocode(address)
+
+function geocode(address){
+
 geocoder.geocode( { 'address': address}, function(results, status) {
 
 	if (status == google.maps.GeocoderStatus.OK) {
@@ -20,6 +24,7 @@ geocoder.geocode( { 'address': address}, function(results, status) {
 	} 
 
 }); 
+}
 
 
 function initializeGoogleMap(latitude,longitude) {
@@ -45,6 +50,8 @@ function initializeGoogleMap(latitude,longitude) {
 </script>
 </head>
 <body>
+  <input type="text" id="add" onchange="geocode(getElementById('add').value);alert(getElementById('add').value)" value="London">
   <div id="map_canvas" style="width:500px; height:500px"></div>
+
 </body>
 </html>
