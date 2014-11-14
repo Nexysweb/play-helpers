@@ -1,0 +1,50 @@
+
+@* taken from http://stackoverflow.com/questions/21411358/google-maps-geocoding-a-string*@
+<!DOCTYPE html>
+<html>
+<head>
+<script type="text/javascript"
+    src="https://maps.googleapis.com/maps/api/js?sensor=false">
+</script>
+<script type="text/javascript">
+var geocoder = new google.maps.Geocoder();
+var address = "Nicholson 2 London";
+
+geocoder.geocode( { 'address': address}, function(results, status) {
+
+	if (status == google.maps.GeocoderStatus.OK) {
+		var latitude = results[0].geometry.location.lat();
+		var longitude = results[0].geometry.location.lng();
+		initializeGoogleMap(latitude,longitude);
+
+	} 
+
+}); 
+
+
+function initializeGoogleMap(latitude,longitude) {
+	var latlng = new google.maps.LatLng(latitude,longitude);
+
+	var myOptions = {
+		zoom: 14,
+		center: latlng,
+		mapTypeId: google.maps.MapTypeId.ROADMAP,
+		mapTypeControl: false
+	};
+
+	var map = new google.maps.Map(document.getElementById("map_canvas"),myOptions);
+
+	var marker = new google.maps.Marker({
+		position: latlng, 
+		map: map, 
+		title:"location : Dublin"
+	}); 
+}
+
+ 
+</script>
+</head>
+<body>
+  <div id="map_canvas" style="width:500px; height:500px"></div>
+</body>
+</html>
