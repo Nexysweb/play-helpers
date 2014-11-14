@@ -1,0 +1,18 @@
+@*
+	allows fast integration of css files
+	file: path to resource
+	r: 	1: internal path
+		2: external path
+		3: bower resource 
+
+	match resource: http://stackoverflow.com/questions/9748258/match-case-in-scala-template-doesnt-work-in-play2
+*@
+@(filepath: String, src_type: Int = 1)
+<link 
+	href="@src_type match{
+		case 2 => {@filepath}
+		case 3 => {@routes.Assets.at(utils.Constants.Src.bower+filepath)}
+		case _ => {@routes.Assets.at(filepath)}
+	}"
+	rel="stylesheet"
+>
