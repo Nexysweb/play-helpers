@@ -1,48 +1,110 @@
 package utils
 
-import play.api._
-import play.api.mvc._
-import play.api.db._
-import play.api.Play.current
 
-import anorm._
-import anorm.SqlParser._
+/*
+	creates link to most used calendar
 
-import java.util.Date
+	note: do not indent the method ics and vcs since the final result might change (Microsoft ...)
 
-object Format{
+*/
 
-	object Pattern{
-		val date:String = "dd.MM.yyyy"
 
-		val datetime:String = "dd.MM.yyyy HH:mm"
+object Calendar{
 
-		// date time for the plugin moment.js
-		val datetime_moment:String = "DD.MM.YYYY HH:mm"
+	import java.util.Date
 
-		
-		object Angular{
-			val date:String = "dd.MM.yyyy"
-			val time:String = "H:mm"
-			val datetime:String = date_angular+" "+time_angular
-		}
+	/*
+
+	returns content of link/data for a calendar system {gmail, ics, vcs}
+	tip: if end time is not known just put: utils.Date.addNHour(start, 1)
+
+	*/
+
+	def gmail(title: String, description: String, location: String, start: Date, end: Date): String = {
+		"http://www.google.com/calendar/event?action=TEMPLATE&trp=true&sprop=&sprop=name:"+
+		"&text="+views.html.helper.urlEncode(title)+
+  		"&dates="+utils.Date.url(start)+"/"+utils.Date.url(end)+
+  		"&location="+views.html.helper.urlEncode(location)+
+  		"&details="+views.html.helper.urlEncode(description)
 	}
-		
-		def date(date: Date) : String = {
-			import java.util.Date
-			import java.text.SimpleDateFormat
 
-			val format_pattern:String = Pattern.datetime
+	def ics(title: String, description: String, location: String, start: Date, end: Date, url: String): String = {
+"""BEGIN:VCALENDAR
+PRODID: -//OpenTable, Inc.//NONSGML ExportToCalendar//EN
+VERSION:2.0
+BEGIN:VEVENT
+URL:"""+url+"""
+DTSTART:"""+utils.Date.url(start)+"""
+DTEND:"""+utils.Date.url(end)+"""
+SUMMARY:"""+title+"""
+DESCRIPTION:"""+description+"""
+END:VEVENT
+END:VCALENDAR"""
+	}
 
-			new SimpleDateFormat(format_pattern).format(date)
-		}
+	def vcs(title: String, description: String, location: String, start: Date, end: Date, url: String): String = {
+"""BEGIN:VCALENDAR
+PRODID: -//Microsoft Corporation//Outlook MIMEDIR//EN
+VERSION:1.0
+BEGIN:VEVENT
+URL:"""+url+"""
+DTSTART:"""+utils.Date.url(start)+"""
+DTEND:"""+utils.Date.url(end)+"""
+SUMMARY:"""+title+"""
+DESCRIPTION:"""+description+"""
+LOCATION:"""+location+"""
+END:VEVENT
+END:VCALENDAR"""
+	}
+}
 
-		/*
+object Date{
+	import java.util.Date
+
+	/*
+		return a format that is URL ready in the format: 20140711T091700Z
+	*/
+	def url(d: Date) : String = {
+		// Zulu: http://stackoverflow.com/questions/9706688/what-does-the-z-mean-in-unix-timestamp-120314170138z
+		str(d, Format.Pattern.dateUrl, "Zulu")
+	}
+
+	/*
+		add N hours to a date
+		param n: number of hours to be added
+	*/
+	def addNHour(date: Date, n: Int): Date = {
+		val hour:Long = 3600*1000; // in milli-seconds.
+		new Date(date.getTime() + n * hour);
+	}
+
+	/*
+		return a date string with the right format and the right timezone
+		param d: date to be converted
+		param format_pattern date pattern
+		param timezone timezone
+
+		additional info: java.util tmezone: http://tutorials.jenkov.com/java-date-time/java-util-timezone.html
+	*/
+
+	def str(d: Date, format_pattern: String = Format.Pattern.datetime, timezone: String = utils.Constants.timezone) : String = {
+
+		import java.util._//Date
+		import java.text._//SimpleDateFormat
+
+		val tz = TimeZone.getTimeZone(timezone);
+
+		val formatter = new SimpleDateFormat(format_pattern)
+		formatter.setTimeZone(tz)
+		formatter.format(d)
+	}
+
+	/*
 			returns a date with the right timezone
 			@date java.utils.date
 			@timezone timezein, e.g. "America/Chicago"
 		*/
-		def dateTimezone(date: Date, timezone: String = utils.Constants.timezone) = {
+		def timezone(date: Date, timezone: String = utils.Constants.timezone): String = {
 			import java.util._//Date
       		import java.text._//SimpleDateFormat
       		val formatter = new SimpleDateFormat(utils.Format.Pattern.datetime);
@@ -51,27 +113,27 @@ object Format{
         	formatter.format(date)
 		}
 
-		def date(date: org.joda.time.DateTime) : String = {
+		def str(date: org.joda.time.DateTime) : String = {
 			import org.joda.time._
 			import java.text.SimpleDateFormat
 
-			val format_pattern:String = Pattern.datetime
+			val format_pattern:String = Format.Pattern.datetime
 
 			new SimpleDateFormat(format_pattern).format(date)
 		}
 
-		def date(date: String) : String = {
+		def str(date: String) : String = {
 			date
 		}
 
-		def dateO(date: Date) : String = {
+		def str(date: Date) : String = {
 			import java.util.Date
 			import java.text.SimpleDateFormat
 
-			new SimpleDateFormat(Pattern.date).format(date)
+			new SimpleDateFormat(Format.Pattern.date).format(date)
 		}
 
-		def hourO(date: Date) : String = {
+		def hour(date: Date) : String = {
 			import java.util.Date
 			import java.text.SimpleDateFormat
 
@@ -90,4 +152,21 @@ object Format{
 			formatter.format(h)
 		}
 
-	}
+}
+		
+
+
+object Format{
+
+	object Pattern{
+		val date:String = "dd.MM.yyyy"
+
+		val dateUrl:String = "yyyyMMdd'T'HHmmss'Z'"//
+		val datetime:String = "dd.MM.yyyy HH:mm"
+
+		// date time for the plugin moment.js
+		val datetime_moment:String = "DD.MM.YYYY HH:mm"
+
+		val datetime_angular:String = "dd.MM.yyyy H:mm"
+	}		
+}

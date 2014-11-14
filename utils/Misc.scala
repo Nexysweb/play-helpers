@@ -8,8 +8,6 @@ import play.api.Play.current
 import anorm._
 import anorm.SqlParser._
 
-import java.util.Date
-
 object Misc{
 	// random password pgeneration
 	// taken from     http://www.bindschaedler.com/2012/04/07/elegant-random-string-generation-in-scala/

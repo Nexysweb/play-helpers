@@ -8,8 +8,6 @@ import play.api.Play.current
 import anorm._
 import anorm.SqlParser._
 
-import java.util.Date
-
 object MySQL{
 	// returns a string with element separated with ,
 	def listToSQL(l: List[Long]): Option[String] = {
