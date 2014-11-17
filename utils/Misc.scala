@@ -8,6 +8,13 @@ import play.api.Play.current
 import anorm._
 import anorm.SqlParser._
 
+class CSS(filepath: String, r: Int =1){
+	// returns a string with the tag
+	// note: \n, \t etc. are removed, ref: http://stackoverflow.com/questions/17581714/scala-replace-newline-tab-and-return-sequences-from-string
+
+	lazy val tag = views.html.tags.css(filepath, r).toString.filter(_ >= ' ')
+}
+
 object Misc{
 	// random password pgeneration
 	// taken from     http://www.bindschaedler.com/2012/04/07/elegant-random-string-generation-in-scala/

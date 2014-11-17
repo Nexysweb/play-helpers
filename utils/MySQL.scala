@@ -111,7 +111,7 @@ object MySQL{
 		@arg table: DB table to be modified
 		@arg ass_field: associated_field: if another condition needs to be fulfilled (e.g. user_id)
 	*/
-	def delete(id: Long, table: String, ass_field: Option[(Long, String)] = None){
+	def delete(id: Long, table: String, ass_field: Option[(Long, String)] = None):Int = {
 		DB.withConnection{implicit c =>
 			SQL("DELETE FROM "+table+" WHERE id={id}"+{if(ass_field.isDefined){" AND "+ass_field.get._2+"={id2}"}else{""}})
 			.on('id -> id, 'id2 -> {if(ass_field.isDefined){ass_field.get._1}else{0}})
