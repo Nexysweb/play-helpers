@@ -1,3 +1,5 @@
+
+
 /**
  * Provide security features
  */
@@ -22,7 +24,7 @@ trait Secured {
   /**
   * Redirect to login if the user in not authorized.
   */
-  private def onUnauthorized(request: RequestHeader) = Results.Ok("ok")
+  private def onUnauthorized(request: RequestHeader) = Results.Redirect(routes.Application.index)
 
 
   // --

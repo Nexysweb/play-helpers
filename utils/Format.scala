@@ -122,15 +122,17 @@ object Date{
 			new SimpleDateFormat(format_pattern).format(date)
 		}
 
-		def str(date: String) : String = {
-			date
-		}
-
 		def str(date: Date) : String = {
 			import java.util.Date
 			import java.text.SimpleDateFormat
 
 			new SimpleDateFormat(Format.Pattern.date).format(date)
+		}
+
+		def year(date: Date = new java.util.Date) : String = {
+			import java.util.Date
+			import java.text.SimpleDateFormat
+			new SimpleDateFormat("yyyy").format(date)
 		}
 
 		def hour(date: Date) : String = {

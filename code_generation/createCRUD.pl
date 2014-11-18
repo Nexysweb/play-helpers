@@ -182,7 +182,7 @@ object $controller_object extends Controller {
   }
 
   def edit = Action{implicit request =>
-    simpleOForm.bindFromRequest.fold(
+    gCtrl.singleOF.bindFromRequest.fold(
       e => BadRequest(\"error\"), 
       v => Ok(views.html.$folder_name.update(v))
     )
@@ -214,7 +214,7 @@ object $controller_object extends Controller {
   }
 
   def detail = Action{implicit request =>
-    simpleForm.bindFromRequest.fold(
+    gCtrl.singleF.bindFromRequest.fold(
       e => Ok(JsNull),
       v => {
         Ok(Json.toJson($model_object.detail(v)))
@@ -229,22 +229,13 @@ object $controller_object extends Controller {
     )($model_object.apply)($model_object.unapply)
   )
 
-  val simpleForm = Form(
-    single(
-      \"id\" -> longNumber
-    )
-  )
 
-  val simpleOForm = Form(
-    single(
-      \"id\" -> optional(longNumber)
-    )
-  )
+
 
   
 
   def delete = Action{implicit request =>
-    simpleForm.bindFromRequest.fold(
+    gCtrl.singleF.bindFromRequest.fold(
       e => BadRequest(\"error\"),
       v => {
         $model_object.delete(v)
