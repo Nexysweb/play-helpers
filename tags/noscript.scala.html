@@ -1,0 +1,15 @@
+@()
+@*
+	Insert the no script warning
+	http://www.enable-javascript.com/
+
+	to be added in Messages
+	-----------------------------------------------------------------------------------------------------------------
+	noscript.text1 = For full functionality of this site it is necessary to enable JavaScript. Here are the 
+	noscript.text2 = instructions how to enable JavaScript in your web browser
+	-----------------------------------------------------------------------------------------------------------------
+*@
+
+<noscript>
+@Messages("noscript.text1") <a href="http://www.enable-javascript.com/fr/" target="_blank">@Messages("noscript.text2")</a>.
+</noscript>
