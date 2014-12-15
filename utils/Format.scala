@@ -169,6 +169,10 @@ object Format{
 		// date time for the plugin moment.js
 		val datetime_moment:String = "DD.MM.YYYY HH:mm"
 
-		val datetime_angular:String = "dd.MM.yyyy H:mm"
+		object Angular{
+			val time = "H:mm"
+			val date = "dd.MM.yyyy"
+			val datetime = date+" "+time
+		}
 	}		
 }
