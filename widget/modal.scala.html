@@ -1,0 +1,20 @@
+@*
+	generates the wrapper of a modal
+	@param name: name of the modal
+	@param content: Html content
+*@
+@(name: String)(content: Html)
+<!-- modal @name -->
+<div class="text-center modal fade" id="@name" tabindex="-1" role="dialog" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+			</div>
+
+			<div class="modal-body">
+				@content		
+			</div>
+		</div>
+	</div>
+</div>
