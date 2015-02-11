@@ -1,0 +1,49 @@
+@**
+ * Generate an HTML input text.
+ *
+ * Example:
+ * {{{
+ * @input("name", args = 'size -> 10, 'placeholder -> "Your name")
+ * }}}
+ *
+ * @param name name of the field.
+ * @param args Set of extra attributes.
+ *@
+@(name: String, args: Seq[(Symbol, Any)] = Seq())(implicit lang: play.api.i18n.Lang)
+@args.toMap.get('type).map(_.toString).getOrElse("text") match{
+	case "textarea" => {
+		<textarea
+			class="form-control"
+			ng-model="value.@name"
+			rows="@args.toMap.get('rows).map(_.toString).getOrElse(3)">
+		</textarea>
+	}
+	case "date" => {
+		<input
+			type="text"
+			class="form-control"
+			ng-model="value.@name"
+			bs-datepicker
+			data-date-format="dd.MM.yyyy"
+		>
+	}
+	case "time" => {
+		<input
+			type="text"
+			class="form-control"
+			ng-model="value.@name"
+			bs-timepicker
+			data-time-format="HH:mm"
+		>
+	}
+	case _ => {
+		<input
+			type="@args.toMap.get('type).map(_.toString).getOrElse("text")"
+			class="form-control"
+			ng-model="value.@name"
+			placeholder="@Messages(
+			args.toMap.get('label).map(_.toString).getOrElse(name)
+			)"
+		>
+	}
+}

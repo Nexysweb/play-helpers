@@ -1,0 +1,4 @@
+@(name: String)(content: Html)(implicit lang: play.api.i18n.Lang)
+<div class="form-group" ng-class="{'has-error': error.@name.replace(".","_")}">
+@content
+</div>
